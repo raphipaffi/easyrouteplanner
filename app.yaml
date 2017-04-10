@@ -1,0 +1,55 @@
+application: easyrouteplanner
+version: 1-1
+runtime: php55
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /js
+  static_dir: js
+
+- url: /css
+  static_dir: css
+
+- url: /img
+  static_dir: img
+
+- url: /includes/changePassword.php
+  script: includes/changePassword.php
+  secure: always
+
+- url: /includes/logout.php
+  script: includes/logout.php
+  secure: always
+
+- url: /includes/processLogin.php
+  script: includes/processLogin.php
+  secure: always
+
+- url: /includes/proxy.php*
+  script: includes/proxy.php
+  secure: always
+
+# serve all php sites from root folder
+- url: /([^/]+\.php)$
+  script: \1
+  secure: always
+
+# default to login page
+- url: /.*
+  script: login.php
+  secure: always
+
+env_variables:
+ DEVELOPMENT_GOOGLE_API_KEY: 'AIzaSyADaKMXuhmtJ-xmyScg4y8QJGTNrRf8YrA'
+ PRODUCTION_GOOGLE_API_KEY:  'AIzaSyAUPt0DsqInqOUz4LOgSWbErMTfEl6OYOE'
+
+ DEVELOPMENT_DB_HOST: 'localhost'
+ DEVELOPMENT_DB_USERNAME: 'raffnix'
+ DEVELOPMENT_DB_PASSWORD: 'ksjjsk123'
+ DEVELOPMENT_DB_NAME: 'routeplannergae'
+
+ PRODUCTION_CLOUD_SQL_INSTANCE: '/cloudsql/easyrouteplanner:easyrouteplannerdb'
+ PRODUCTION_DB_USERNAME: 'root'
+ PRODUCTION_DB_PASSWORD: ''
+ PRODUCTION_DB_NAME: 'routeplannergae'

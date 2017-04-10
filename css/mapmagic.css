@@ -1,0 +1,319 @@
+
+
+/* main page layout */
+html, body {
+	width: 100%;
+	height:100%;
+    /*overflow: hidden;*/
+	margin: 0;
+	padding: 0;
+    font-family:"Verdana", Verdana, sans-serif;
+    font-size: 85%;
+}
+
+
+
+
+/* login, registration and change password form */
+form td {
+    padding: 0.3em;
+}
+
+form input[type="text"], form input[type="email"], form input[type="password"] {
+    width: 200px;
+}
+
+form input[type="button"] {
+    min-width: 11em;
+    min-height: 2.4em;
+}
+
+
+
+
+/* tab panels of main page */
+.ui-tabs .ui-tabs-panel {
+    padding: 1em 1em; /* default padding on each tab */
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+#tab-planner {
+    padding: 0; /* no padding on tab with map */
+}
+
+@media only screen and (max-device-width: 480px) {
+    #tab-planner-button {
+        display: none;
+        visibility: hidden;
+    }
+
+    #tab-planner {
+        display: none;
+        visibility: hidden;
+    }
+}
+
+
+
+/* planner tab: map and search bar */
+#wrapperDiv {
+	float: left;
+	width: calc(100% - 370px);
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#mapDiv {
+	float: left;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#progressBarDiv {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    z-index: 99;
+    width: calc(100% - 420px);
+}
+
+#progressBarText {
+    color: white;
+    text-shadow: 1px 1px 4px black;
+    font-weight: bold;
+}
+
+#progressBar {
+    height: 15px;
+}
+
+
+
+/* planner tab: info windows on map */
+#infoWindowDiv {
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+}
+
+#addWaypoint, #deleteSearchMarker {
+    height: 2.4em;
+    width: 8em;
+    margin: 1em 0.5em 0;
+}
+
+
+
+/* planner tab: numbered labels on map */
+.waypointIndexLabel {
+    text-align: center;
+    white-space: nowrap;
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+    box-shadow: 1px 1px 4px #000000;
+    width: 1.5em;
+}
+
+
+
+/* planner tab: route planning bar on right side */
+#controlBarDiv {
+	float: right;
+	width: 370px;
+	height: 100%;
+	text-align: left;
+	overflow: auto;
+}
+
+/*#tab-planner .ui-datepicker {*/
+    /*width: 342px;*/
+/*}*/
+
+/*.ui-datepicker .ui-datepicker-current-day {*/
+    /*border: 3px solid #ff0000;*/
+/*}*/
+
+/*.ui-datepicker .ui-datepicker-buttonpane {*/
+/*}*/
+
+/*#tab-planner .ui-datepicker .ui-datepicker-buttonpane .ui-datepicker-current {*/
+    /*width: 100%;*/
+    /*height: 2.4em;*/
+    /*margin: 0;*/
+/*}*/
+
+/*.ui-datepicker .ui-datepicker-today {*/
+/*}*/
+
+#tab-planner .xdsoft_datepicker {
+    width: 330px;
+}
+
+#plannerButtons {
+    margin: 0.5em;
+}
+
+.routeButton {
+	margin: 0;
+    padding: 0;
+	height: 3em;
+	width: 63px;
+}
+
+.routeButton img {
+    margin: -7px 0;
+    /*margin: auto;*/
+}
+
+
+
+/* planner tab: list of waypoints */
+#addressListGUI {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#addressListGUI li {
+	margin: 0 0.3em 1.6em 0.3em; /* bottom margin of 1.6em needed to give space for invisibleButton*/
+	padding: 0.4em;
+	height: 2.5em;
+}
+
+#iconButton {
+    width: 20px;
+	height: 20px;
+	margin: -0.75em 0 0 0;
+	padding: 0;
+	float:right;
+}
+
+#iconButton span {
+    margin: 0;
+    padding: 0;
+}
+
+#invisibleButton {
+    width: 100%;
+    height: 1.6em;
+	margin: 0.4em 0 0 0;
+	padding: 0;
+	background-color: transparent;
+	border:0;
+}
+
+#invisibleButton span {
+    margin-left: 50%;
+    margin-top:0;
+    padding: 0;
+}
+
+#routingResult {
+	margin: 20px;
+}
+
+
+
+/* customer tab: search bar, paginator and table */
+.tableSearch {
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+#paginator {
+    margin: 1em;
+    text-align: center;
+}
+#paginator a {
+    color: #b7b7b7;
+}
+#paginator a:hover {
+    color: #000000;
+}
+#paginator a:active {
+    color: #000000;
+}
+
+table.editgrid {
+    border-collapse: collapse;
+    border: 1px solid #CCB;
+    margin: 0 auto;
+}
+table.editgrid td, table.editgrid th {
+    padding: 5px;
+    border: 1px solid #E0E0E0;
+
+}
+table.editgrid th {
+    background: #E5E5E5;
+    text-align: left;
+}
+table.editgrid >tbody tr:hover {
+    background-color: #888888; /* color when mouse hovers over row */
+    color: white;
+}
+table.editgrid >tbody tr:hover a {
+    color: white;
+}
+table.editgrid a {
+    color: #000000;
+}
+table.editgrid a:hover {
+    text-decoration: underline;
+}
+td.number {
+    text-align: right;
+    font-weight: bold;
+    padding-right: 5px;
+    white-space: nowrap;
+}
+td.boolean {
+    text-align: center;
+}
+th.boolean {
+    text-align: center;
+}
+input.invalid {
+    background: red;
+    color: #FDFDFD;
+}
+
+#tableOfRoutestops table.editgrid td {
+    text-align: center;
+}
+
+
+
+/* settings tab: buttons */
+#settingsWrapper {
+    max-width: 40em;
+}
+
+#addNewCustomerGroup {
+    min-width: 11em;
+    min-height: 2.4em;
+    margin: 1em 0;
+}
+
+#saveCalendarLink {
+    min-width: 7em;
+    min-height: 2.4em;
+    margin: 1em 0;
+}
+
+
+
+/* account tab: buttons */
+#logoutButton {
+    margin: 3px;
+}
+
+
+.error {
+    color: red;
+}
