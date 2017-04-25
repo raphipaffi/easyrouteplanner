@@ -36,7 +36,19 @@ var markerIcons = {
     "20": "img/orange_big_ns.png",
     "21": "img/grey_big_ns.png",
     "22": "img/black_big_ns.png",
-    "23": "img/white_big_ns.png"
+    "23": "img/white_big_ns.png",
+    "24": "img/green_star_ns.png",
+    "25": "img/yellow_star_ns.png",
+    "26": "img/brown_star_ns.png",
+    "27": "img/lightblue_star_ns.png",
+    "28": "img/blue_star_ns.png",
+    "29": "img/red_star_ns.png",
+    "30": "img/purple_star_ns.png",
+    "31": "img/teel_star_ns.png",
+    "32": "img/orange_star_ns.png",
+    "33": "img/grey_star_ns.png",
+    "34": "img/black_star_ns.png",
+    "35": "img/white_star_ns.png"
 };
 
 // local variables that hold the data from the database (markerList is filled by createMarkers())
@@ -357,8 +369,8 @@ function markerClicked(customer) {
         + "<b>Fachgebiet:</b> "           + customer.areaofexpertise + " <br/>"
         + "<b>Zuletzt besucht:</b> "      +(customer.visit != null? tableOfCustomers.checkDate(customer.visit).formattedDate : "") + " <br/>"
         + "<b>N&auml;chster Termin:</b> " +(customer.appointment != null? tableOfCustomers.checkDatetime(customer.appointment).formattedDatetime : "") + " <br/>"
-        + "<b>Zielgruppe:</b> "           +(customer.hint != null? customer.hint : "") + " <br/>"
         + "<b>Gruppe:</b> "               + groupDescription + " <br/>"
+        + "<b>Kommentar:</b> "            +(customer.hint != null? customer.hint : "") + " <br/>"
         + "<div align='center'><button id='addWaypoint'>Besuchen</button></div>" +
         "</div>";
 

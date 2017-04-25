@@ -11,8 +11,8 @@ function initCustomerManager() {
     customerMetadata.push({ name: "phone",       label: "Telefon", datatype: "string",  editable: false});
     customerMetadata.push({ name: "visit",       label: "Zuletzt besucht", datatype: "date",    editable: true});
     customerMetadata.push({ name: "appointment", label: "N\xE4chster Termin",  datatype: "datetime",editable: (calendarLink == null)});
-    customerMetadata.push({ name: "hint",        label: "Zielgruppe", datatype: "string",  editable: true});
     customerMetadata.push({ name: "group",       label: "Gruppe",  datatype: "string",  editable: true});
+    customerMetadata.push({ name: "hint",        label: "Kommentar", datatype: "string",  editable: true});
 
     // create grid object
     tableOfCustomers = new EditableGrid("CustomerDataTable", {
@@ -29,18 +29,18 @@ function initCustomerManager() {
 
 
 function updateCustomerTable() {
-    // define hints
-    customerMetadata[6].values = {
-        "null":    " ",
-        "P":      "P"
-    };
-
     // define groups
-    customerMetadata[7].values = {};
-    customerMetadata[7].values["null"] = " ";
+    customerMetadata[6].values = {};
+    customerMetadata[6].values["null"] = " ";
     $.each(customerGroups, function(k, group) {
-        customerMetadata[7].values[group.groupID] = group.description;
+        customerMetadata[6].values[group.groupID] = group.description;
     });
+
+    // define hints
+    // customerMetadata[7].values = {
+    //     "null":    " ",
+    //     "P":      "P"
+    // };
 
     // define customer data
     var data = [];
@@ -52,8 +52,8 @@ function updateCustomerTable() {
             "phone":       customer.phone? customer.phone : "",
             "visit":       customer.visit? customer.visit : "",
             "appointment": customer.appointment? customer.appointment : "",
-            "hint":        customer.hint,
-            "group":       customer.groupID}
+            "group":       customer.groupID,
+            "hint":        (customer.hint != null? customer.hint : "")}
         });
     });
 
@@ -86,12 +86,12 @@ function updateCustomerInDB(customer, columnName, newValue) {
         case "appointment":
             customer.appointment = newValue != ""? newValue : null;
             break;
-        case "hint":
-            customer.hint = newValue != "null"? newValue : null;
-            break;
         case "group":
             customer.groupID = newValue != "null"? parseInt(newValue) : null;
             // editAllWithSameAddress = true;
+            break;
+        case "hint":
+            customer.hint = newValue; // != "null"? newValue : null;
             break;
     }
 
@@ -117,7 +117,7 @@ function updateCustomerInDB(customer, columnName, newValue) {
 function updatePaginator()
 {
     var paginator = $("#paginator").empty();
-    var nbPages = this.getPageCount();
+    // var nbPages = this.getPageCount();
 
     // get interval
     var interval = this.getSlidingPageInterval(20);

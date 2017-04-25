@@ -26,8 +26,8 @@ function initRouteManager() {
     routeMetadata.push({ name: "cIndex",      label: "Ziel",    datatype: "html",    editable: false});
     routeMetadata.push({ name: "visit",       label: "Zuletzt besucht", datatype: "date",    editable: true});
     routeMetadata.push({ name: "appointment", label: "N\xE4chster Termin",  datatype: "datetime", editable: (calendarLink == null)});
-    routeMetadata.push({ name: "hint",        label: "Zielgruppe", datatype: "string",  editable: true});
     routeMetadata.push({ name: "group",       label: "Gruppe",  datatype: "string",  editable: true});
+    routeMetadata.push({ name: "hint",        label: "Kommentar", datatype: "string",  editable: true});
 
     // create grid object
     tableOfRoutestops = new EditableGrid("RouteDataTable", {
@@ -52,19 +52,19 @@ function putRouteIntoRouteTab(route, dateString) {
     }
     messageArea.hide();
 
-    // define hints
-    routeMetadata[4].values = {
-        "null":    " ",
-        "SD":      "SD",
-        "kein SD": "kein SD"
-    };
-
     // define groups
-    routeMetadata[5].values = {};
-    routeMetadata[5].values["null"] = " ";
+    routeMetadata[4].values = {};
+    routeMetadata[4].values["null"] = " ";
     $.each(customerGroups, function(k, group) {
-        routeMetadata[5].values[group.groupID] = group.description;
+        routeMetadata[4].values[group.groupID] = group.description;
     });
+
+    // define hints
+    // routeMetadata[5].values = {
+    //     "null":    " ",
+    //     "SD":      "SD",
+    //     "kein SD": "kein SD"
+    // };
 
     var data = [];
     selectedRoute = [];
@@ -81,8 +81,8 @@ function putRouteIntoRouteTab(route, dateString) {
                     "cIndex":      k,
                     "visit":       customer.visit? customer.visit : "",
                     "appointment": customer.appointment? customer.appointment : "",
-                    "hint":        customer.hint,
-                    "group":       customer.groupID}
+                    "group":       customer.groupID,
+                    "hint":        (customer.hint != null? customer.hint : "")}
                 });
 
                 return false; // break loop over customers
@@ -100,8 +100,8 @@ function putRouteIntoRouteTab(route, dateString) {
         var phone = customers[cInd].phone? customers[cInd].phone : "";
 
         cell.innerHTML =
-            "<button class=\"routePointButtonClass\"" +
-            "style=\"width: 100%; min-height: 44px; margin: 0px; white-space: normal;\" " +
+            "<button class=\"routePointButtonClass\" " +
+            "style=\"width: 100%; min-height: 44px; margin: 0; white-space: normal;\" " +
             "onclick=\"navigateToAddress('"+address+"')\">" + name + "<br>" + address + "<br>" + phone +
             "</button>";
     }}));
