@@ -49,7 +49,7 @@ if (login_check()) {
         <div align="center">
 
             <p class="error" align="center">
-            <?php if (isset($_GET['error'])) { echo "Fehler beim Login!"; } ?>
+            <?php if (isset($_GET['error'])) { echo utf8_decode(($_GET['error'])); } ?>
             </p>
 
             <form action="includes/processLogin.php" method="post" name="login_form" id="login_form">
@@ -67,6 +67,7 @@ if (login_check()) {
 
                 <label for="autoLogin">Auf diesem Ger&auml;t eingeloggt bleiben?</label>
                 <input type="checkbox" name="autoLogin" id="autoLogin"/><br>
+                <p><small>(Nach 14 Tagen Abwesenheit neue Anmeldung erforderlich.)</small></p><br>
 
                 <div style="margin: 1em;" >
                     <input type="button" id="loginButton" value="Login"/>

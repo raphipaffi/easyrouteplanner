@@ -29,10 +29,7 @@ function login($email, $password, $autoLogin) {
     global $mysqli;
 
     // Using prepared statements means that SQL injection is not possible.
-    if ($stmt = $mysqli->prepare("SELECT accountID, password, salt
-        FROM useraccounts
-        WHERE email = ?
-        LIMIT 1")) {
+    if ($stmt = $mysqli->prepare("SELECT accountID, password, salt FROM useraccounts WHERE email = ? LIMIT 1")) {
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $stmt->store_result();
@@ -47,10 +44,13 @@ function login($email, $password, $autoLogin) {
             if (checkbrute($accountID, $mysqli) == true) {
                 // Account is locked
                 // Todo: Send an email to user saying their account is locked
-                return false;
+                $message = urlencode('Account aufgrund mehrerer fehlerhafter Anmeldeversuche gesperrt.');
+                header('Location: ../login.php?error=' . $message);
+                exit;
             } else {
                 // Check if the password in the database matches the password the user submitted.
                 if ($db_password == $password) {
+                    // Login successful.
                     $user_browser = $_SERVER['HTTP_USER_AGENT'];
 
                     // XSS protection as we might print this value
@@ -65,7 +65,9 @@ function login($email, $password, $autoLogin) {
                     // create "remember me" cookie
                     if ($autoLogin) rememberMe($accountID);
 
-                    // Login successful.
+                    // reset counter of failed login attempts for this account
+                    resetbrute($accountID);
+
                     return true;
                 } else {
                     // Password is not correct
@@ -75,7 +77,6 @@ function login($email, $password, $autoLogin) {
             }
         }
     }
-
     return false;
 }
 
@@ -100,6 +101,7 @@ function rememberMe($accountID)
     // create expire date
     $expires = new DateTime('now');
     $expires->add(new DateInterval('P14D'));
+//    $expires->add(new DateInterval('PT01M'));
 
     // place selector, hashed token, accountID and expire date into database
     if ($stmt = $mysqli->prepare("INSERT INTO auth_tokens(selector, token, accountID, expires) VALUES (?, ?, ?, ?)")) {
@@ -115,8 +117,8 @@ function rememberMe($accountID)
 
     // Create auth cookie
     $cookieParams = session_get_cookie_params();
-    $cookieLifetime = time() + 14 * 24 * 60 * 60; // cookie expires in 14 days
-//    $cookieLifetime = 10 * 365 * 24 * 60 * 60; // cookie expires in ten years from session start
+//    $cookieLifetime = time() + 10; // cookie expires in 10 seconds
+    $cookieLifetime = time() + 10 * 365 * 24 * 60 * 60; // cookie expires in ten years
     if (strpos(getenv('SERVER_SOFTWARE'), 'Development') === false) $secure = true; // enforce SSL in production environment
     else $secure = false; // don't enforce SSL in development environment
     $httponly = true; // this stops JavaScript being able to access the session id.
@@ -174,21 +176,29 @@ function checkbrute($accountID) {
     // All login attempts are counted from the past 2 hours.
     $valid_attempts = $now - (2 * 60 * 60);
 
-    if ($stmt = $mysqli->prepare("SELECT time
-                                  FROM loginattempts
-                                  WHERE accountID = ?
-                                  AND time > '$valid_attempts'")) {
+    if ($stmt = $mysqli->prepare("SELECT time FROM loginattempts WHERE accountID = ? AND time > '$valid_attempts'")) {
         $stmt->bind_param('i', $accountID);
 
         // Execute the prepared query.
         $stmt->execute();
         $stmt->store_result();
 
-        // If there have been more than 5 failed logins
-        if ($stmt->num_rows > 5) return true;
+        // If there have been 5 (or more) failed logins within the last two hours > block any further attempts
+        if ($stmt->num_rows > 4) return true;
     }
-
     return false;
+}
+
+
+function resetbrute($accountID) {
+    global $mysqli;
+
+    if ($stmt = $mysqli->prepare("DELETE FROM loginattempts WHERE accountID = ?")) {
+        $stmt->bind_param('i', $accountID);
+
+        // Execute the prepared query.
+        $stmt->execute();
+    }
 }
 
 
@@ -243,8 +253,7 @@ function isAutoLoginSet()
         }
         list($selectorCO, $tokenCO) = $split;
 
-        // AND expires <= CURDATE()
-        if ($stmt = $mysqli->prepare("SELECT authID, token, accountID FROM auth_tokens WHERE selector = ?")) {
+        if ($stmt = $mysqli->prepare("SELECT authID, token, accountID, expires FROM auth_tokens WHERE selector = ?")) {
             $stmt->bind_param('s', $selectorCO);
             $stmt->execute();
             $stmt->store_result();
@@ -254,36 +263,43 @@ function isAutoLoginSet()
                 return false;
             }
             if ($stmt->num_rows > 0) {
-                $stmt->bind_result($authID, $tokenDB, $accountID);
+                $stmt->bind_result($authID, $tokenDB, $accountID, $expireDate);
                 $stmt->fetch();
             }
+            // TODO: else remove auth cookie as there is no corresponding entry in DB
             $stmt->close();
         }
 
-        if (isset($authID) && isset($tokenDB) && isset($accountID)) {
-            if ($tokenDB == hash('sha512', $tokenCO)) {
-                // Privilege escalation - get a new random session ID
-                session_regenerate_id(true);
+        if (isset($authID) && isset($tokenDB) && isset($accountID) &&
+            isset($expireDate) && $tokenDB == hash('sha512', $tokenCO)) {
 
-                // remove this token from DB
-                $stmt = $mysqli->prepare("DELETE FROM auth_tokens WHERE authID = ?");
-                $stmt->bind_param('i', $authID);
-                $stmt->execute();
-                if ($stmt->errno != 0) {
-                    echo "Error deleting login token from database. Error: " . $stmt->error;
-                    $stmt->close();
-                    return false;
-                }
-                $stmt->close();
-
-                $_SESSION['accountID'] = $accountID;
-
-                // generate a new token
-                rememberMe($accountID);
-                return true;
+            $expireDate = new DateTime($expireDate);
+            $now = new DateTime('now');
+            if ($expireDate < $now) {
+                forgetMe();
+                return false;
             }
+
+            // Privilege escalation - get a new random session ID
+            session_regenerate_id(true);
+
+            // remove this token from DB
+            $stmt = $mysqli->prepare("DELETE FROM auth_tokens WHERE authID = ?");
+            $stmt->bind_param('i', $authID);
+            $stmt->execute();
+            if ($stmt->errno != 0) {
+                echo "Error deleting login token from database. Error: " . $stmt->error;
+                $stmt->close();
+                return false;
+            }
+            $stmt->close();
+
+            $_SESSION['accountID'] = $accountID;
+
+            // generate a new token
+            rememberMe($accountID);
+            return true;
         }
-        echo "Invalid auth cookie!";
     }
     return false;
 }

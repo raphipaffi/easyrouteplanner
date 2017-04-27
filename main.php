@@ -4,7 +4,7 @@ include_once 'includes/loginFunctions.php';
 sec_session_start();
 
 if (login_check() == false) {
-    header('Location: ../login.php?error=1');
+    header('Location: ../login.php');
     exit;
 }
 ?>
@@ -64,7 +64,8 @@ if (login_check() == false) {
     <script type="text/javascript" src="js/FileSaver.js"></script>
     <script type="text/javascript" src="js/jquery.wordexport.js"></script>
     <script type="text/javascript" src="js/jquery.datetimepicker.js"></script>
-    <script type="text/javascript" src="js/BpTspSolver.js"></script>
+    <script type="text/javascript" src="js/oms.min.js"></script>
+<!--    <script type="text/javascript" src="js/BpTspSolver.js"></script>-->
 <!--    <script type="text/javascript" src="js/tsp.js"></script>-->
 </head>
 

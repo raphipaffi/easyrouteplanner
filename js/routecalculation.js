@@ -10,37 +10,37 @@ var drivingSectionsComplete;
 var walkingSectionsComplete;
 
 
-function calcRoute2() {
-    // check if at least a start and end address is available
-    if (waypointList.length < 2) {
-        alert("Die Route muss mindestens zwei Routenpunkte enthalten.\n\nKlicken Sie Marker auf der Karte und w\xE4hlen 'Besuchen', um Routenpunkte hinzuzuf\xFCgen.");
-        return;
-    }
-
-    // Create the tsp object
-    tsp = new BpTspSolver(map);
-    tsp.startOver();
-
-    // Set your preferences
-    //tsp.setTravelMode(google.maps.DirectionsTravelMode.WALKING);
-
-    // The first point added is the starting location.
-    // The last point added is the final destination (in the case of A - Z mode)
-    for (var i = 0; i < waypointList.length; i++) {
-        var latLng = new google.maps.LatLng(waypointList[i].lat,waypointList[i].lng);
-        tsp.addWaypoint(latLng);
-    }
-
-    tsp.solveAtoZ(function() {
-        // If you just want the permutation of the location indices that is the best route:
-        var order = tsp.getOrder();
-
-        // If you want the duration matrix that was used to compute the route:
-        var durations = tsp.getDurations();
-
-        var a = 5;
-    });
-}
+// function calcRoute2() {
+//     // check if at least a start and end address is available
+//     if (waypointList.length < 2) {
+//         alert("Die Route muss mindestens zwei Routenpunkte enthalten.\n\nKlicken Sie Marker auf der Karte und w\xE4hlen 'Besuchen', um Routenpunkte hinzuzuf\xFCgen.");
+//         return;
+//     }
+//
+//     // Create the tsp object
+//     tsp = new BpTspSolver(map);
+//     tsp.startOver();
+//
+//     // Set your preferences
+//     //tsp.setTravelMode(google.maps.DirectionsTravelMode.WALKING);
+//
+//     // The first point added is the starting location.
+//     // The last point added is the final destination (in the case of A - Z mode)
+//     for (var i = 0; i < waypointList.length; i++) {
+//         var latLng = new google.maps.LatLng(waypointList[i].lat,waypointList[i].lng);
+//         tsp.addWaypoint(latLng);
+//     }
+//
+//     tsp.solveAtoZ(function() {
+//         // If you just want the permutation of the location indices that is the best route:
+//         var order = tsp.getOrder();
+//
+//         // If you want the duration matrix that was used to compute the route:
+//         var durations = tsp.getDurations();
+//
+//         var a = 5;
+//     });
+// }
 
 function calcRoute() {
 	// check if at least a start and end address is available
