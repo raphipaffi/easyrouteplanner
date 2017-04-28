@@ -13,7 +13,7 @@ if (login_check() == false) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Easy Route Planner 2</title>
+    <title>Easy Route Planner 3</title>
 
     <meta charset="utf-8">
 
