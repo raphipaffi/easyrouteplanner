@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "0.1.0",
+    "tasks": [
+        {
+            "taskName": "serve",
+            "command": "C:\\Users\\Raphael\\AppData\\Local\\Google\\Cloud SDK\\google-cloud-sdk\\platform\\bundledpython\\python.exe",
+            "isShellCommand": false,
+            "echoCommand": true,
+            "args": ["C:/Users/Raphael/AppData/Local/Google/Cloud SDK/google-cloud-sdk/platform/google_appengine/dev_appserver.py", "app.yaml", "--php_remote_debugging=yes"],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "deploy",
+            "command": "gcloud.cmd",
+            "isShellCommand": false,
+            "echoCommand": true,
+            "args": ["app", "deploy", "--project=easyrouteplanner", "--quiet", "app.yaml"],
+            "showOutput": "always"
+        },
+        {
+            "taskName": "browser",
+            "command": "gcloud.cmd",
+            "isShellCommand": false,
+            "echoCommand": true,
+            "args": ["app", "browse", "--project=easyrouteplanner"],
+            "showOutput": "always"
+        }
+    ]
+}
