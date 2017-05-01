@@ -64,7 +64,7 @@ if (login_check() == false) {
     <script type="text/javascript" src="js/FileSaver.js"></script>
     <script type="text/javascript" src="js/jquery.wordexport.js"></script>
     <script type="text/javascript" src="js/jquery.datetimepicker.js"></script>
-    <script type="text/javascript" src="js/oms.min.js"></script>
+<!--    <script type="text/javascript" src="js/oms.min.js"></script>-->
 <!--    <script type="text/javascript" src="js/BpTspSolver.js"></script>-->
 <!--    <script type="text/javascript" src="js/tsp.js"></script>-->
 </head>

@@ -1,7 +1,7 @@
 // tools for map
 var map;
 var mapScaled = false;
-var oms; // OverlappingMarkerSpiderfier
+// var oms; // OverlappingMarkerSpiderfier
 
 // tools for map markers
 var geocoder;
@@ -137,14 +137,14 @@ function initialize() {
 
 
     // create an OverlappingMarkerSpiderfier instance associated with the map
-    oms = new OverlappingMarkerSpiderfier(map, {
-        markersWontMove: true
-        ,markersWontHide: true
-        ,basicFormatEvents: true
-        ,keepSpiderfied: true
-        ,nearbyDistance: 1
-        ,circleSpiralSwitchover: 20
-    });
+    // oms = new OverlappingMarkerSpiderfier(map, {
+    //     markersWontMove: true
+    //     ,markersWontHide: true
+    //     ,basicFormatEvents: true
+    //     ,keepSpiderfied: true
+    //     ,nearbyDistance: 1
+    //     ,circleSpiralSwitchover: 20
+    // });
 
     // init geocoder
     geocoder = new google.maps.Geocoder();
@@ -332,16 +332,16 @@ function createMarker(customer) {
     }
 
     var marker = new google.maps.Marker({
-        // map: map,
+        map: map,
         position: latLng,
         zIndex: zIndex,
         icon: icon,
         anchorPoint: new google.maps.Point(-1,-8),
         animation: animation
     });
-    oms.addMarker(marker);  // adds the marker to the spiderfier _and_ the map
+    // oms.addMarker(marker);  // adds the marker to the spiderfier _and_ the map
 
-    // google.maps.event.addListener(marker, 'click', function () { markerClicked(customer); });
+    google.maps.event.addListener(marker, 'click', function () { markerClicked(customer); });
     google.maps.event.addListener(marker, 'spider_click', function () { markerClicked(customer); });
 
     markerList[customer.customerID] = marker;
