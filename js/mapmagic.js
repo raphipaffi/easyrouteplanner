@@ -313,8 +313,12 @@ function updateGeoCode(customer) {
             if (status == google.maps.GeocoderStatus.OK) {
                 customer.lat = results[0].geometry.location.lat();
                 customer.lng = results[0].geometry.location.lng();
-
-               createMarker(customer);
+                
+                if (markerList.hasOwnProperty(customer.customerID)) {
+                    markerList[customer.customerID].setMap(null);
+                    delete markerList[customer.customerID];
+                }
+                createMarker(customer);
 
                 //apply changes to database
                 $.post("accessCustomers.php", {function: "updateCustomer", customer: customer}, function(retVal) {
@@ -324,8 +328,11 @@ function updateGeoCode(customer) {
             else {
                 customer.lat = null;
                 customer.lng = null;
-                markerList[customer.customerID].setMap(null);
-                delete markerList[customer.customerID];
+                
+                if (markerList.hasOwnProperty(customer.customerID)) {
+                    markerList[customer.customerID].setMap(null);
+                    delete markerList[customer.customerID];
+                }
 
                 //apply changes to database
                 $.post("accessCustomers.php", {function: "updateCustomer", customer: customer}, function(retVal) {
