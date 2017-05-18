@@ -5,14 +5,14 @@ var customerMetadata;
 function initCustomerManager() {
     // init meta data of customer table
     customerMetadata = [];
-    customerMetadata.push({ name: "optID",       label: "ID",      datatype: "integer", editable: false});
-    customerMetadata.push({ name: "name",        label: "Name",    datatype: "string",  editable: false});
-    customerMetadata.push({ name: "address",     label: "Adresse", datatype: "string",  editable: false});
-    customerMetadata.push({ name: "phone",       label: "Telefon", datatype: "string",  editable: false});
-    customerMetadata.push({ name: "visit",       label: "Zuletzt besucht", datatype: "date",    editable: true});
-    customerMetadata.push({ name: "appointment", label: "N\xE4chster Termin",  datatype: "datetime",editable: (calendarLink == null)});
-    customerMetadata.push({ name: "group",       label: "Gruppe",  datatype: "string",  editable: true});
-    customerMetadata.push({ name: "hint",        label: "Kommentar", datatype: "string",  editable: true});
+    customerMetadata.push({ name: "optID",       label: "ID",                   datatype: "integer", editable: false});
+    customerMetadata.push({ name: "name",        label: "Name",                 datatype: "string",  editable: true});
+    customerMetadata.push({ name: "address",     label: "Adresse",              datatype: "string",  editable: true});
+    customerMetadata.push({ name: "phone",       label: "Telefon",              datatype: "string",  editable: true});
+    customerMetadata.push({ name: "visit",       label: "Zuletzt besucht",      datatype: "date",    editable: true});
+    customerMetadata.push({ name: "appointment", label: "N\xE4chster Termin",   datatype: "datetime",editable: (calendarLink == null)});
+    customerMetadata.push({ name: "group",       label: "Gruppe",               datatype: "string",  editable: true});
+    customerMetadata.push({ name: "hint",        label: "Kommentar",            datatype: "string",  editable: true});
 
     // create grid object
     tableOfCustomers = new EditableGrid("CustomerDataTable", {
@@ -53,7 +53,7 @@ function updateCustomerTable() {
             "visit":       customer.visit? customer.visit : "",
             "appointment": customer.appointment? customer.appointment : "",
             "group":       customer.groupID,
-            "hint":        (customer.hint != null? customer.hint : "")}
+            "hint":        customer.hint? customer.hint : ""}
         });
     });
 
@@ -79,6 +79,16 @@ function updateCustomerInDB(customer, columnName, newValue) {
 
     // update customer data in JSON object
     switch (columnName) {
+        case "name":
+            customer.name = newValue != ""? newValue : null;
+            break;
+        case "address":
+            customer.address = newValue != ""? newValue : null;
+            updateGeoCode(customer);
+            break;
+        case "phone":
+            customer.phone = newValue != ""? newValue : null;
+            break;
         case "visit":
             customer.visit = newValue != ""? newValue : null;
             //editAllWithSameAddress = true;

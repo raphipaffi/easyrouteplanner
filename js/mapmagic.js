@@ -300,7 +300,46 @@ function geoCode(customer, next) {
                     'Status: ' + status);
                 nextAddress++;
             }
-            next();
+            if (typeof next === "function") next();
+        }
+    );
+}
+
+
+function updateGeoCode(customer) {
+    geocoder.geocode(
+        {'address': customer.address},
+        function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                customer.lat = results[0].geometry.location.lat();
+                customer.lng = results[0].geometry.location.lng();
+
+               createMarker(customer);
+
+                //apply changes to database
+                $.post("accessCustomers.php", {function: "updateCustomer", customer: customer}, function(retVal) {
+                    if('error' in retVal) { alert(retVal.error); }
+                });
+            }
+            else {
+                customer.lat = null;
+                customer.lng = null;
+                markerList[customer.customerID].setMap(null);
+                delete markerList[customer.customerID];
+
+                //apply changes to database
+                $.post("accessCustomers.php", {function: "updateCustomer", customer: customer}, function(retVal) {
+                    if('error' in retVal) { alert(retVal.error); }
+                });
+
+                alert(
+                    'ID: '      + customer.optID   + '\n' +
+                    'Name: '    + customer.name    + '\n' +
+                    'Adresse: ' + customer.address + '\n' +
+                    '\n' +
+                    'Die Adresse konnte nicht gefunden werden.\n' +
+                    'Status: ' + status);
+            }
         }
     );
 }
@@ -424,18 +463,18 @@ function searchLocation() {
     // first search through list of customers if there is a match in optID, name or address
     $.each(customers, function(k, customer) {
         if (isNumber) {
-            if (customer.optID == parseInt(searchString)) {
+            if (customer.optID == parseInt(searchString) && markerList.hasOwnProperty(customer.customerID)) {
                 markerClicked(customer);
                 customerFound = true;
                 return false;
             }
         }
-        else if (searchStringRegEx.test(customer.name)) {
+        else if (searchStringRegEx.test(customer.name) && markerList.hasOwnProperty(customer.customerID)) {
             markerClicked(customer);
             customerFound = true;
             return false;
         }
-        else if (searchStringRegEx.test(customer.address)) {
+        else if (searchStringRegEx.test(customer.address) && markerList.hasOwnProperty(customer.customerID)) {
             markerClicked(customer);
             customerFound = true;
             return false;

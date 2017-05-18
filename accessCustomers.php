@@ -153,8 +153,13 @@ function updateCustomer($accountID, $customer, $editAllWithSameAddress)
     if ($customer['appointment'] == "") $customer['appointment'] = null;
     if ($customer['hint'] == "") $customer['hint'] = null;
     if ($customer['groupID'] == "") $customer['groupID'] = null;
+    if ($customer['lat'] == "") $customer['lat'] = null;
+    if ($customer['lng'] == "") $customer['lng'] = null;
 
     if ($stmt = $mysqli->prepare("UPDATE customers SET
+        name = ?,
+        address = ?,
+        phone = ?,
         visit = ?,
         appointment = ?,
         hint = ?,
@@ -163,7 +168,7 @@ function updateCustomer($accountID, $customer, $editAllWithSameAddress)
         lng = ?
         WHERE customerID = ? AND accountID = ?")
     ) {
-        $stmt->bind_param('ssssddii', $customer['visit'], $customer['appointment'], $customer['hint'], $customer['groupID'], $customer['lat'], $customer['lng'], $customer['customerID'], $accountID);
+        $stmt->bind_param('sssssssddii', $customer['name'], $customer['address'], $customer['phone'], $customer['visit'], $customer['appointment'], $customer['hint'], $customer['groupID'], $customer['lat'], $customer['lng'], $customer['customerID'], $accountID);
         $stmt->execute();
         $stmt->store_result();
         if (!$stmt) {
